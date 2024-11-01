@@ -49,7 +49,7 @@
         href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
         rel="stylesheet">
 
-    <title>Riddle Run | UCSC IEEE Introduction</title>
+    <title>Riddle Run | UCSC IEEE Monthly Meetup November</title>
 
 </head>
 
@@ -180,6 +180,7 @@
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-beta1/jquery.min.js"></script>
+    <script src="./assets/js/common.js"></script>
     <script>
         function getUrlParams() {
             var params = {};
@@ -224,10 +225,7 @@
             console.log(data);
 
             // set get prams to confirmParticipation
-            // var url = `https://saliya.me/ieeeday/confirmParticipation?userId=${userId}&confirmation=${confirmation}`;
-            // var url = `https://saliya.me/riddlerun/treasure-hunt/register?teamID=${teamID}&password=${password}`;
-            // var url = `http://127.0.0.1/saliya.ml/ieeeday/treasure-hunt/register-team`;
-            var url = `https://saliya.me/riddlerun/treasure-hunt/register-team`;
+            var url = `${API_URL}/treasure-hunt/register-team`;
 
             $.ajax({
                 // url: './ieeeday/',

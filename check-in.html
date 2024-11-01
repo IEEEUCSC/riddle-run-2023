@@ -42,14 +42,13 @@
 
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
         rel="stylesheet">
 
-    <title>Riddle Run | UCSC IEEE Introduction</title>
+    <title>Riddle Run | UCSC IEEE Monthly Meetup November</title>
 
 </head>
 
@@ -66,7 +65,7 @@
         }
 
         .main .mainInner {
-            width: 50vh;
+            width: 70vh;
             text-align: center;
             padding: 1rem;
             /* border-radius: 5px;
@@ -221,6 +220,9 @@
                         .riddle-wrapper blockquote {
                             font-weight: 100;
                             font-size: 1.5rem;
+                            font-size: clamp(0.8rem, 4vw, 1.5rem);
+                            /* font-size: 5vw;
+                            font-size: 0.8rem; */
                             max-width: 600px;
                             line-height: 1.4;
                             position: relative;
@@ -241,14 +243,35 @@
 
                         .riddle-wrapper blockquote:before {
                             content: '“';
-                            left: -4rem;
+                            left: -3rem;
                             top: -2rem;
                         }
 
                         .riddle-wrapper blockquote:after {
                             content: '”';
-                            right: -4rem;
+                            right: -3rem;
                             bottom: 1rem;
+                        }
+
+                        .riddle-wrapper blockquote pre {
+                            padding: 1rem;
+                            padding: 1rem 2rem;
+                            background: #f3f3f3;
+                            border-radius: 5px;
+                            color: #3f3f5a;
+
+
+                            font-size: 1.5rem;
+                            font-size: clamp(0.6rem, 3vw, 1.5rem);
+                            text-align: left;
+                            font-family: inherit;
+                        }
+
+                        .riddle-wrapper blockquote pre .hljs {
+                            border-radius: 5px;
+                            background: transparent;
+                            padding: 0;
+                            font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
                         }
 
                         .riddle-wrapper cite {
@@ -275,7 +298,8 @@
             <!-- made with love by IEEE web team -->
             <footer>
                 <div class="made-with-love">
-                    <div class="made-with-love-text">Made with <i class='bx bxs-heart'></i> by UCSC IEEE SB Web Team</div>
+                    <div class="made-with-love-text">Made with <i class='bx bxs-heart'></i> by UCSC IEEE SB Web Team
+                    </div>
                     <!-- <div class="made-with-love-text">Made with <i class='bx bxs-heart bx-burst' ></i> by UCSC IEEE SB Web Team</div> -->
                 </div>
             </footer>
@@ -284,7 +308,13 @@
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-beta1/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+    <script src="./assets/js/common.js"></script>
     <script>
+
         function getUrlParams() {
             var params = {};
             window.location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (str, key, value) {
@@ -339,7 +369,7 @@
                 return;
             }
 
-            let authorNames = ["Tharindra", "දිනූගෙ යාලුවෙක්", "Some Dude", "Definitely Not Einstein", "The Riddle Master", "The Enigma Writer", "The Puzzle Pro", "The Cryptographer", "The Conundrum Creator", "The Brain Teaser Baron", "The Mystery Maker", "The Puzzler Extraordinaire"];
+            let authorNames = ["Loku Cir", "Loku Cir", "Loku Cir", "දිනූගෙ යාලුවෙක්", "Some Dude", "Definitely Not Einstein", "The Riddle Master", "The Enigma Writer", "The Puzzle Pro", "The Cryptographer", "The Conundrum Creator", "The Brain Teaser Baron", "The Mystery Maker", "The Puzzler Extraordinaire"];
             // console.log(authorNames);
 
             var params = getUrlParams();
@@ -352,10 +382,7 @@
             console.log(data);
 
             // set get prams to confirmParticipation
-            // var url = `https://saliya.me/ieeeday/confirmParticipation?userId=${userId}&confirmation=${confirmation}`;
-            // var url = `https://saliya.me/riddlerun/treasure-hunt/register?teamID=${teamID}&password=${password}`;
-            // var url = `http://127.0.0.1/saliya.ml/ieeeday/treasure-hunt/check-in`;
-            var url = `https://saliya.me/riddlerun/treasure-hunt/check-in`;
+            var url = `${API_URL}/treasure-hunt/check-in`;
 
             $.ajax({
                 // url: './ieeeday/',
@@ -375,8 +402,22 @@
 
                         let riddle = response['riddle'];
                         let name = response['name'];
-                        $('.confirm.true .riddle').text(riddle);
+                        // $('.confirm.true .riddle').text(riddle);
+
+                        // if there is <pre> tag in the riddle add <code class="language-python"> tag inside it
+                        if (riddle.includes("<pre>")) {
+                            riddle = riddle.replace("<pre>", "<pre><code class='language-python'>");
+                            riddle = riddle.replace("</pre>", "</code></pre>");
+                        }
+
+
+                        $('.confirm.true .riddle').html(riddle);
                         $('.confirm.true .author').text(authorNames[Math.floor(Math.random() * authorNames.length)]);
+
+                        if (riddle.includes("<pre>")) {
+                            console.log("highlighting");
+                            hljs.highlightAll();
+                        }
 
                         // $('.confirm.true .team-name').text(response['team-name']);
                         // console.log(response['team-name']);

@@ -49,16 +49,43 @@
         href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
         rel="stylesheet">
 
-    <title>Riddle Run | UCSC IEEE Introduction</title>
+    <title>Riddle Run | UCSC IEEE Monthly Meetup November</title>
 
 </head>
 
 <body>
 
     <style>
+        @-moz-document url-prefix() {
+
+            html,
+            body {
+                scrollbar-width: none;
+            }
+        }
+
+        body::-webkit-scrollbar {
+            display: none;
+        }
+
+        @-moz-document url-prefix() {
+            .hideScrollbar {
+                scrollbar-width: none;
+            }
+        }
+
+        .hideScrollbar {
+            overflow: hidden;
+        }
+
+        .hideScrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+
         .main {
             width: 100vw;
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -84,18 +111,23 @@
         .fixedBg {
             background: url("./assets/img/slider/leaderboardbg.jpg") center center no-repeat fixed;
             background-size: cover;
+            height: 100vh;
 
             position: fixed;
             inset: 0;
             z-index: -1;
-
         }
 
         .main .mainInner {
 
+            /* max-height: 80vh; */
             width: 50vw;
+            width: clamp(650px, 50vw, 1500px);
             text-align: center;
             padding: 1rem;
+            margin: 2rem 0;
+            /* margin: 10vh 0; */
+            overflow: auto;
             /* border-radius: 5px;
             border: 1px solid #ccc; */
         }
@@ -178,6 +210,7 @@
 
         /* media mobile */
         @media (max-width: 768px) {
+
             /* hide last col of table */
             .leaderboard-table table tr td:nth-child(4),
             .leaderboard-table table tr th:nth-child(4) {
@@ -189,7 +222,7 @@
 
 
     <div class="main">
-        <div class="mainInner">
+        <div class="mainInner hideScrollbar">
 
             <!-- Leaderboard table-->
             <div class="leaderboard">
@@ -365,22 +398,21 @@
                     }
                 }
             </style>
-
-
-            <!-- made with love by IEEE web team -->
-            <footer>
-                <div class="made-with-love">
-                    <div class="made-with-love-text">Made with <i class='bx bxs-heart'></i> by UCSC IEEE SB Web Team</div>
-                    <!-- <div class="made-with-love-text">Made with <i class='bx bxs-heart bx-burst' ></i> by UCSC IEEE SB Web Team</div> -->
-                </div>
-            </footer>
         </div>
+        <!-- made with love by IEEE web team -->
+        <footer>
+            <div class="made-with-love">
+                <div class="made-with-love-text">Made with <i class='bx bxs-heart'></i> by UCSC IEEE SB Web Team</div>
+                <!-- <div class="made-with-love-text">Made with <i class='bx bxs-heart bx-burst' ></i> by UCSC IEEE SB Web Team</div> -->
+            </div>
+        </footer>
     </div>
 
     <div class="fixedBg"></div>
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-beta1/jquery.min.js"></script>
+    <script src="./assets/js/common.js"></script>
     <script>
         function getUrlParams() {
             var params = {};
@@ -414,10 +446,24 @@
             return new Date(date.replace(/-/g, "/"))
         }
 
+        // function dateTimeToScore(dateTimeStr) {
+        //     const date = new Date(dateTimeStr);
+        //     const score = date.getTime();
+        //     return score;
+        // }
+
+        const epoch = new Date("2024-01-01T00:00:00Z");
+        function dateTimeToScore(dateTimeStr) {
+            const date = new Date(dateTimeStr);
+            const diffMs = date - epoch;
+            const diffMinutes = Math.floor(diffMs / (1000 * 60));
+            return diffMinutes;
+        }
+
         function updateLeaderboard() {
             // var url = `https://saliya.me/riddlerun/treasure-hunt/register?teamID=${teamID}&password=${password}`;
             // var url = `http://127.0.0.1/saliya.ml/ieeeday/treasure-hunt/leaderboard`;
-            var url = `https://saliya.me/riddlerun/treasure-hunt/leaderboard`;
+            var url = `${API_URL}/treasure-hunt/leaderboard`;
 
             $.ajax({
                 url: url,
@@ -454,6 +500,9 @@
                                 hour12: true,
                                 // timeZone: 'Asia/Colombo'
                             });
+
+                            solvedTime = dateTimeToScore(data[i]['solvedTime']);
+
 
                             var $tr = $("<tr>");
                             $tr.append("<td>" + rank + "</td>");
